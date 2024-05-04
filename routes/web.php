@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DiagnosesController;
+use App\Http\Controllers\AppointmentsController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -25,9 +27,15 @@ Route::get('/', function () {
     ]);
 })->middleware(['isAlreadyLoggedIn']);
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DiagnosesController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/records', [DiagnosesController::class, 'records'])->middleware(['auth', 'verified', 'isDoctorCheck'])->name('records');
+Route::get('/request-appointment', [AppointmentsController::class, 'index'])->middleware(['auth', 'verified', 'isPatientCheck'])->name('req-app');
+Route::post('/request-appointment', [AppointmentsController::class, 'store'])->middleware(['auth', 'verified', 'isPatientCheck'])->name('add-app');
+Route::get('/store-records', [DiagnosesController::class, 'store'])->middleware(['auth', 'verified'])->name('store');
+Route::get('/edit-records/{id}', [DiagnosesController::class, 'edit'])->middleware(['auth', 'verified'])->name('edit-records');
+Route::post('/update', [DiagnosesController::class, 'update'])->middleware(['auth', 'verified'])->name('update-records');
+Route::get('/delete/{id}', [DiagnosesController::class, 'destroy'])->middleware(['auth', 'verified'])->name('delete-records');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

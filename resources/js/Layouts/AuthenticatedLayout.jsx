@@ -16,7 +16,7 @@ export default function Authenticated({ user, header, children }) {
                         <div className="flex">
                             <div className="shrink-0 flex items-center">
                                 <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+                                    <img src="../img/logo.png" alt="" className='max-w-8'/>
                                 </Link>
                             </div>
 
@@ -25,6 +25,21 @@ export default function Authenticated({ user, header, children }) {
                                     Dashboard
                                 </NavLink>
                             </div>
+                            {user.isDoctor == 1 ? 
+                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                    <NavLink href={route('records')} active={route().current('records')}>
+                                        Records
+                                    </NavLink>
+                                </div>
+                            : ""}
+                            {user.isDoctor == 0 ? 
+                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                    <NavLink href={route('req-app')} active={route().current('req-app')}>
+                                        Make appointmet
+                                    </NavLink>
+                                </div>
+                            : ""}
+
                         </div>
 
                         <div className="hidden sm:flex sm:items-center sm:ms-6">
@@ -96,6 +111,20 @@ export default function Authenticated({ user, header, children }) {
                             Dashboard
                         </ResponsiveNavLink>
                     </div>
+                    {user.isDoctor == 1 ? 
+                    <div className="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink href={route('records')} active={route().current('records')}>
+                            Records
+                        </ResponsiveNavLink>
+                    </div>
+                    : ""}
+                    {user.isDoctor == 0 ? 
+                    <div className="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink href={route('req-app')} active={route().current('req-app')}>
+                            Make appointment
+                        </ResponsiveNavLink>
+                    </div>
+                    : ""}
 
                     <div className="pt-4 pb-1 border-t border-gray-200">
                         <div className="px-4">
