@@ -4,7 +4,6 @@ import InputText from '@/Components/InputText';
 import InputError from '@/Components/InputError';
 
 export default function AddAppointment({auth, flash}) {
-    console.log(flash)
     const { data, setData, post, processing, errors } = useForm({
         patientId: auth.user.id,
         patientName: auth.user.name,

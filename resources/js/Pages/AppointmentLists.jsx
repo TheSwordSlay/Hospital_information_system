@@ -4,7 +4,6 @@ import Swal from 'sweetalert2';
 
 
 export default function AppointmentLists({ auth, app }) {
-    console.log(app)
     function done(id) {
         var data = {
             idUpdate: id
