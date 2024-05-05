@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('patientName');
             $table->string('date');
             $table->string('hours');
+            $table->boolean('isDone')->default(false);
             $table->timestamps();
         });
     }

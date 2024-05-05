@@ -8,6 +8,8 @@ use App\Models\Diagnoses;
 use App\Http\Requests\StoreDiagnosesRequest;
 use App\Http\Requests\UpdateDiagnosesRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Appointments;
+use App\Models\User;
 
 class DiagnosesController extends Controller
 {
@@ -22,8 +24,16 @@ class DiagnosesController extends Controller
                 'diagnose' => $diagnose
             ]);
         } else {
+            $app = Appointments::where('isDone', false)->get();
+            $rec = Diagnoses::all();
+            $user = User::where('isDoctor', false)->get();
+            $totalAppointments = $app->count();
+            $totalRecords = $rec->count();
+            $totalPatient = $user->count();
             return Inertia::render('Dashboard', [
-                
+                'totalAppointments' => $totalAppointments,
+                'totalRecords' => $totalRecords,
+                'totalPatient' => $totalPatient
             ]);
         }
 

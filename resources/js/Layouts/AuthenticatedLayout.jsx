@@ -35,7 +35,21 @@ export default function Authenticated({ user, header, children }) {
                             {user.isDoctor == 0 ? 
                                 <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                     <NavLink href={route('req-app')} active={route().current('req-app')}>
-                                        Make appointmet
+                                        Make appointment
+                                    </NavLink>
+                                </div>
+                            : ""}
+                            {user.isDoctor == 0 ? 
+                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                    <NavLink href={route('my-app')} active={route().current('my-app')}>
+                                        My appointments
+                                    </NavLink>
+                                </div>
+                            : ""}
+                            {user.isDoctor == 1 ? 
+                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                    <NavLink href={route('app-list')} active={route().current('app-list')}>
+                                        Appointment lists
                                     </NavLink>
                                 </div>
                             : ""}
@@ -122,6 +136,20 @@ export default function Authenticated({ user, header, children }) {
                     <div className="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink href={route('req-app')} active={route().current('req-app')}>
                             Make appointment
+                        </ResponsiveNavLink>
+                    </div>
+                    : ""}
+                    {user.isDoctor == 0 ? 
+                    <div className="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink href={route('my-app')} active={route().current('my-app')}>
+                            My appointments
+                        </ResponsiveNavLink>
+                    </div>
+                    : ""}
+                    {user.isDoctor == 1 ? 
+                    <div className="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink href={route('app-list')} active={route().current('app-list')}>
+                            Appointment lists
                         </ResponsiveNavLink>
                     </div>
                     : ""}
