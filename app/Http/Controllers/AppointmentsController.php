@@ -56,6 +56,8 @@ class AppointmentsController extends Controller
     public function store(StoreAppointmentsRequest $request)
     {
         $data = Appointments::where('isDone', false)->get()->toArray();
+        $hoursDelay = 24;
+        $timeInfringement = false;
         $canAppoint = true;
         $skipCheck = false;
         $request->validate([
@@ -65,7 +67,7 @@ class AppointmentsController extends Controller
         ]);
         $now = Carbon::now();
         $date = Carbon::createFromTimeString($request->date.' '.$request->hours);
-        $twentyFourHourLater = Carbon::now()->addHours(24);
+        $twentyFourHourLater = Carbon::now()->addHours($hoursDelay);
         if($now->gt($date)) {
             $skipCheck = true;
             $canAppoint = false;
@@ -73,6 +75,7 @@ class AppointmentsController extends Controller
         else if ($date->between($now, $twentyFourHourLater, true)) {
             $skipCheck = true;
             $canAppoint = false;
+            $timeInfringement = true;
         }
         if(!$skipCheck) {
             foreach($data as $app) {
@@ -99,6 +102,8 @@ class AppointmentsController extends Controller
             $appointments->doctorName = $doctorName->name;
             $appointments->save();
             return to_route('req-app')->with('message', '1');
+        } else if($timeInfringement) {
+            return to_route('req-app')->with('message', 'Appointment hanya bisa diambil minimal '.(string)$hoursDelay.' jam sebelum waktu yang diambil');
         } else {
             return to_route('req-app')->with('message', '0');
         }
