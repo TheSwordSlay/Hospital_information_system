@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('date');
             $table->string('hours');
             $table->boolean('isDone')->default(false);
+            $table->string('doctorId');
+            $table->string('doctorName');
             $table->timestamps();
         });
     }

@@ -3,12 +3,13 @@ import { Head, useForm } from '@inertiajs/react';
 import InputText from '@/Components/InputText';
 import InputError from '@/Components/InputError';
 
-export default function AddAppointment({auth, flash}) {
+export default function AddAppointment({auth, flash, doctors}) {
     const { data, setData, post, processing, errors } = useForm({
         patientId: auth.user.id,
         patientName: auth.user.name,
         date: null,
         hours: null,
+        doctor: null
       })
 
       function submit(e) {
@@ -30,7 +31,7 @@ export default function AddAppointment({auth, flash}) {
                     {flash.message == "0" ? 
                     <div role="alert" className="alert alert-error">
                     <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <span>Appointment tidak tersedia pada hari dan jam tersebut</span>
+                    <span>Dokter tidak tersedia pada hari dan jam tersebut</span>
                     </div>
                     :""}
                     {flash.message == "1" ? 
@@ -44,6 +45,17 @@ export default function AddAppointment({auth, flash}) {
                         <InputError message={errors.date} className="mt-2" />
                         {/* <InputText label="Jam" type="time" onChange={(e) => setData("hours", e.target.value)}></InputText>
                         <InputError message={errors.hours} className="mt-2" /> */}
+
+                        <label className="label">
+                        <span className="label-text">Dokter</span>
+                        </label>
+                        <select className="select select-bordered w-full mb-3" onChange={(e) => setData("doctor", e.target.value)}>
+                        <option disabled selected>Pilih dokter</option>
+                            {doctors.map((data, i) => {
+                                return <option key={i} value={data.id}>{data.name}</option>
+                            })}
+                        </select>
+                        <InputError message={errors.doctor} className="mt-2" />
 
                         <label className="label">
                         <span className="label-text">Jam</span>
@@ -61,6 +73,7 @@ export default function AddAppointment({auth, flash}) {
                             <option>24:00</option>
                         </select>
                         <InputError message={errors.hours} className="mt-2" />
+                        
                         <div></div>
                         <button type="submit" className="btn btn-success my-6" disabled={processing}>Request appointment</button>
                     </form>

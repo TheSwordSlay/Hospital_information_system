@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Appointments;
+use App\Models\User;
 use App\Http\Requests\StoreAppointmentsRequest;
 use App\Http\Requests\UpdateAppointmentsRequest;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,10 @@ class AppointmentsController extends Controller
      */
     public function index()
     {
-        return Inertia::render('AddAppointment');
+        $doctors = User::where('isDoctor', true)->get(['id', 'name']);
+        return Inertia::render('AddAppointment', [
+            'doctors' => $doctors
+        ]);
     }
 
     public function myApp() {
@@ -28,7 +32,7 @@ class AppointmentsController extends Controller
     }
 
     public function appList() {
-        $app = Appointments::where('isDone', false)->get();
+        $app = Appointments::where('isDone', false)->where('doctorId', Auth::user()->id)->get();
         return Inertia::render('AppointmentLists', [
             'app' => $app
         ]);
@@ -57,6 +61,7 @@ class AppointmentsController extends Controller
         $request->validate([
             'date' => "required",
             'hours' => "required",
+            'doctor' => "required"
         ]);
         $now = Carbon::now();
         $date = Carbon::createFromTimeString($request->date.' '.$request->hours);
@@ -65,17 +70,17 @@ class AppointmentsController extends Controller
             $skipCheck = true;
             $canAppoint = false;
         } 
-        // else if ($date->between($now, $twentyFourHourLater, true)) {
-        //     $skipCheck = true;
-        //     $canAppoint = false;
-        // }
+        else if ($date->between($now, $twentyFourHourLater, true)) {
+            $skipCheck = true;
+            $canAppoint = false;
+        }
         if(!$skipCheck) {
             foreach($data as $app) {
                 if ($request->date == $app['date'])  {
                     $hour = Carbon::createFromTimeString($request->hours);
                     $hourCheck = Carbon::createFromTimeString($app['hours'])->subMinutes(119);
                     $hourCheck2 = Carbon::createFromTimeString($app['hours'])->addHours(2);
-                    if($hour->between($hourCheck, $hourCheck2,true)) {
+                    if($hour->between($hourCheck, $hourCheck2,true) && ($app['doctorId'] == $request->doctor)) {
                         $canAppoint = false;
                     }
                 }
@@ -83,7 +88,16 @@ class AppointmentsController extends Controller
         }
 
         if($canAppoint) {
-            Appointments::create($request->all());
+            $doctorName = User::where('id', $request->doctor)->first();
+            $appointments = new Appointments();
+            $appointments->patientId = $request->patientId;
+            $appointments->patientName = $request->patientName;
+            $appointments->date = $request->date;
+            $appointments->hours = $request->hours;
+            $appointments->date = $request->date;
+            $appointments->doctorId = $request->doctor;
+            $appointments->doctorName = $doctorName->name;
+            $appointments->save();
             return to_route('req-app')->with('message', '1');
         } else {
             return to_route('req-app')->with('message', '0');

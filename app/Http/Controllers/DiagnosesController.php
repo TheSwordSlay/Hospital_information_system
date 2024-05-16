@@ -24,7 +24,7 @@ class DiagnosesController extends Controller
                 'diagnose' => $diagnose
             ]);
         } else {
-            $app = Appointments::where('isDone', false)->get();
+            $app = Appointments::where('isDone', false)->where('doctorId', Auth::user()->id)->get();
             $rec = Diagnoses::all();
             $user = User::where('isDoctor', false)->get();
             $totalAppointments = $app->count();

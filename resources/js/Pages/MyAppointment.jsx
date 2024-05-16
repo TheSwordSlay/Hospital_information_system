@@ -15,8 +15,9 @@ export default function MyAppointment({ auth, app }) {
     <thead>
       <tr>
         <th></th>
-        <th>Appointment date</th>
-        <th>Appointment hours</th>
+        <th>Tanggal appointment</th>
+        <th>Jam appointment</th>
+        <th>Nama dokter</th>
       </tr>
     </thead>
     <tbody>
@@ -26,6 +27,7 @@ export default function MyAppointment({ auth, app }) {
           <th>{i+1}</th>
           <td>{data.date}</td>
           <td>{data.hours}</td>
+          <td>{data.doctorName}</td>
         </tr>)}
     </tbody>
   </table>
